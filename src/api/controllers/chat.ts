@@ -495,7 +495,7 @@ function messagesPrepare(messages: any[], refs: any[]) {
   });
 
   const content =
-    messages.reduce((content, message) => {
+    validMessages.reduce((content, message) => {
       if (_.isArray(message.content)) {
         return (
           message.content.reduce((_content, v) => {
