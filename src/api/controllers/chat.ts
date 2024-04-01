@@ -471,7 +471,7 @@ function extractRefFileUrls(messages: any[]) {
         urls.push(v['image_url']['url']);
     });
   }
-  logger.info("这个图片链接为：" + urls.toString);
+  logger.info("这个图片链接为：" + urls.toString());
   return urls;
 }
 
