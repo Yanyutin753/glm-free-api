@@ -500,11 +500,19 @@ function messagesPrepare(messages: any[], refs: any[]) {
   let hasFileOrImage = Array.isArray(latestMessage.content)
     && latestMessage.content.some(v => (typeof v === 'object' && ['file', 'image_url'].includes(v['type'])));
   if (hasFileOrImage) {
-    // 对 latestMessage.content 进行过滤，只保留"type": "text"的内容
-    latestMessage.content = latestMessage.content.filter(v => typeof v === 'object' && v['type'] === 'text');
 
+    // 对 latestMessage.content 进行过滤，只保留"type": "text"的内容
+    // latestMessage.content = latestMessage.content.filter(v => typeof v === 'object' && v['type'] === 'text');
+
+    // 对 latestMessage.content 进行过滤，只保留不含base64的内容
+    latestMessage.content = latestMessage.content.filter(v => {
+      if (typeof v === 'object' && ['file', 'image_url'].includes(v['type'])) {
+        return !util.isBASE64Data(v['image_url']['url']);
+      }
+      return true;
+    });
     let newFileMessage = {
-      "content": "关注用户最新发送文件和消息的结尾",
+      "content": "关注用户最新发送文件和消息结尾",
       "role": "system"
     };
     validMessages.splice(validMessages.length - 1, 0, newFileMessage);
