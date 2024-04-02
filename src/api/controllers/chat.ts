@@ -494,20 +494,29 @@ function messagesPrepare(messages: any[], refs: any[]) {
     // 不含"type": "image_url"或"type": "file"的消息保留
     return !message.content.some(v => (typeof v === 'object' && ['file', 'image_url'].includes(v['type'])));
   });
-  
+
   // 检查最新消息是否含有"type": "image_url"或"type": "file",如果有则注入消息
   let latestMessage = validMessages[validMessages.length - 1];
   let hasFileOrImage = Array.isArray(latestMessage.content)
     && latestMessage.content.some(v => (typeof v === 'object' && ['file', 'image_url'].includes(v['type'])));
   if (hasFileOrImage) {
-    // newMessage是一个用于指示文件的消息，是的模型能正常回答出相应的问题
-    let newMessage = {
-      "content": "持续关注用户最新发送的文件和消息的结尾",
+    // newFileMessage是一个用于指示文件的消息，使得模型能正常回答出相应的问题
+    let newFileMessage = {
+      "content": "留意最新文件和消息结尾",
       "role": "system"
     };
-    validMessages.splice(validMessages.length - 1, 0, newMessage);
+    validMessages.splice(validMessages.length - 1, 0, newFileMessage);
+    logger.info("检查注入文件消息");
   }
-
+  else {
+    // newTextMessage是一个用于指示文本的消息，使得模型能正常回答出相应的问题
+    let newTextMessage = {
+      "content": "留意消息结尾",
+      "role": "system"
+    };
+    validMessages.splice(validMessages.length - 1, 0, newTextMessage);
+    logger.info("检查注入文本消息");
+  }
 
   const content =
     validMessages.reduce((content, message) => {
