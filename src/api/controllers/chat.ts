@@ -500,18 +500,18 @@ function messagesPrepare(messages: any[], refs: any[]) {
   let hasFileOrImage = Array.isArray(latestMessage.content)
     && latestMessage.content.some(v => (typeof v === 'object' && ['file', 'image_url'].includes(v['type'])));
   if (hasFileOrImage) {
-    // newFileMessage是一个用于指示文件的消息，使得模型能正常回答出相应的问题
+    // 对 latestMessage.content 进行过滤，只保留"type": "text"的内容
+    latestMessage.content = latestMessage.content.filter(v => typeof v === 'object' && v['type'] === 'text');
+
     let newFileMessage = {
-      "content": "留意最新文件和消息结尾",
+      "content": "关注用户最新发送文件和消息的结尾",
       "role": "system"
     };
     validMessages.splice(validMessages.length - 1, 0, newFileMessage);
     logger.info("检查注入文件消息");
-  }
-  else {
-    // newTextMessage是一个用于指示文本的消息，使得模型能正常回答出相应的问题
+  } else {
     let newTextMessage = {
-      "content": "留意消息结尾",
+      "content": "关注用户消息的结尾",
       "role": "system"
     };
     validMessages.splice(validMessages.length - 1, 0, newTextMessage);
