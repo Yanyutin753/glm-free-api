@@ -182,8 +182,8 @@ async function createCompletion(
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) => uploadFile(fileUrl, refreshToken))
-        )
+        refFileUrls.map((fileUrl) => uploadFile(fileUrl, refreshToken))
+      )
       : [];
 
     // 如果引用对话ID不正确则重置引用
@@ -283,8 +283,8 @@ async function createCompletionStream(
     const refFileUrls = extractRefFileUrls(messages);
     const refs = refFileUrls.length
       ? await Promise.all(
-          refFileUrls.map((fileUrl) => uploadFile(fileUrl, refreshToken))
-        )
+        refFileUrls.map((fileUrl) => uploadFile(fileUrl, refreshToken))
+      )
       : [];
 
     // 如果引用对话ID不正确则重置引用
@@ -755,19 +755,19 @@ function messagesPrepare(messages: any[], refs: any[], isRefConv = false) {
         ...(fileRefs.length == 0
           ? []
           : [
-              {
-                type: "file",
-                file: fileRefs,
-              },
-            ]),
+            {
+              type: "file",
+              file: fileRefs,
+            },
+          ]),
         ...(imageRefs.length == 0
           ? []
           : [
-              {
-                type: "image",
-                image: imageRefs,
-              },
-            ]),
+            {
+              type: "image",
+              image: imageRefs,
+            },
+          ]),
       ],
     },
   ];
@@ -1092,6 +1092,7 @@ function createTransStream(stream: any, endCallback?: Function) {
     );
   const parser = createParser((event) => {
     try {
+      let webSearchCount = 0;
       if (event.type !== "event") return;
       // 解析JSON
       const result = _.attempt(() => JSON.parse(event.data));
@@ -1129,9 +1130,10 @@ function createTransStream(stream: any, endCallback?: Function) {
               meta_data &&
               _.isArray(meta_data.metadata_list)
             ) {
+              webSearchCount += 1;
               const searchText =
                 meta_data.metadata_list.reduce(
-                  (meta, v) => meta + `检索 ${v.title}(${v.url}) ...`,
+                  (meta, v) => meta + `检索【${webSearchCount}】 [${v.title}](${v.url})`,
                   ""
                 ) + "\n";
               textOffset += searchText.length;
@@ -1212,8 +1214,8 @@ function createTransStream(stream: any, endCallback?: Function) {
               index: 0,
               delta:
                 result.status == "intervene" &&
-                result.last_error &&
-                result.last_error.intervene_text
+                  result.last_error &&
+                  result.last_error.intervene_text
                   ? { content: `\n\n${result.last_error.intervene_text}` }
                   : {},
               finish_reason: "stop",
