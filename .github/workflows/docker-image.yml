@@ -40,7 +40,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          vinlic/glm-free-api:${{ steps.tag_name.outputs.tag }}
-          vinlic/glm-free-api:latest
+          yangclivia/glm-free-api:${{ steps.tag_name.outputs.tag }}
+          yangclivia/glm-free-api:latest
         platforms: linux/amd64,linux/arm64
         build-args: TARGETPLATFORM=${{ matrix.platform }}
