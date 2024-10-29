@@ -1131,11 +1131,11 @@ function createTransStream(stream: any, endCallback?: Function) {
               _.isArray(meta_data.metadata_list)
             ) {
               webSearchCount += 1;
-              const searchText =
-                meta_data.metadata_list.reduce(
-                  (meta, v) => meta + `检索【${webSearchCount}】 [${v.title}](${v.url})`,
-                  ""
-                ) + "\n";
+              const searchText = meta_data.metadata_list.reduce((meta, v) => {
+                  const result = `${meta}检索【${webSearchCount}】 [${v.title}](${v.url})\n`;
+                  webSearchCount += 1;
+                  return result;
+              }, "");
               textOffset += searchText.length;
               toolCall = true;
               return innerStr + searchText;
