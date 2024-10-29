@@ -1074,6 +1074,7 @@ function createTransStream(stream: any, endCallback?: Function) {
   let codeTemp = "";
   let lastExecutionOutput = "";
   let textOffset = 0;
+  let webSearchCount = 0;
   !transStream.closed &&
     transStream.write(
       `data: ${JSON.stringify({
@@ -1092,7 +1093,6 @@ function createTransStream(stream: any, endCallback?: Function) {
     );
   const parser = createParser((event) => {
     try {
-      let webSearchCount = 0;
       if (event.type !== "event") return;
       // 解析JSON
       const result = _.attempt(() => JSON.parse(event.data));
